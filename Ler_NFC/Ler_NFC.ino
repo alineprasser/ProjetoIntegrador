@@ -58,12 +58,9 @@ void loop(void) {
         byte payload[payloadLength];
         record.getPayload(payload);
 
-        // Print the Hex and Printable Characters
         Serial.print("  Payload (HEX): ");
         PrintHexChar(payload, payloadLength);
 
-        // Force the data into a String (might work depending on the content)
-        // Real code should use smarter processing
         String payloadAsString = "";
         for (int c = 0; c < payloadLength; c++) {
           payloadAsString += (char)payload[c];
@@ -71,7 +68,6 @@ void loop(void) {
         Serial.print("  Payload (as String): ");
         Serial.println(payloadAsString);
 
-        // id is probably blank and will return ""
         String uid = record.getId();
         if (uid != "") {
           Serial.print("  ID: ");Serial.println(uid);
