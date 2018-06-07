@@ -38,6 +38,7 @@ def confereop(op,conSerial,cnx):
 			banco.insertProf(cnx,cod,nome,uid)
 			disc = input("Informe o nome da disciplina que este professor leciona: ")
 			ch = input("Informe a carga horária da disciplina: ")
+			p = banco.selectProf(cnx)
 			for i in p:
 				if(i[3] == listaUid):
 					idp = i[0]
@@ -60,7 +61,7 @@ def confereop(op,conSerial,cnx):
 			for i in p:
 				if(i[3] == listaUid):
 					print(i)
-			print("Esta ação apagará os dados do banco de dados permanentemente. Aproxime a tag ADMIN para confirmar.\n")
+			print("Esta ação apagará os dados do banco de dados permanentemente. Aproxime a tag ADMIN para confirmar ou outra qualquer para cancelar.\n")
 			confirma,uid = leitura(conSerial)
 			while(confirma[0] == ''):
 				confirma,uid = leitura(conSerial)
