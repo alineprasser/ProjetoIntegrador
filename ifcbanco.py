@@ -18,7 +18,8 @@ def leitura(conSerial):
 
 def confereop(op,conSerial,cnx):
 	adm = ['04', 'B3', '61', '2A', 'E7', '4C', '80']
-	p = banco.selectUidProf(cnx)
+	p = banco.selectProf(cnx)
+	a = banco.selectAluno(cnx)
 	d = banco.selectDisc(cnx)
 	todas = banco.selectTodasUid(cnx)
 	
@@ -37,7 +38,6 @@ def confereop(op,conSerial,cnx):
 			banco.insertProf(cnx,cod,nome,uid)
 			disc = input("Informe o nome da disciplina que este professor leciona: ")
 			ch = input("Informe a carga horária da disciplina: ")
-			p = banco.selectProf(cnx)
 			for i in p:
 				if(i[3] == listaUid):
 					idp = i[0]
@@ -53,7 +53,14 @@ def confereop(op,conSerial,cnx):
 			print("Aluno cadastrado com sucesso!\n")
 	else:
 		if listaUid in todas:
-			print("Esta ação não poderá ser recuperada posteriormente. Aproxime a tag ADMIN para confirmar.\n")
+			print("Dados que serão apagados: ")
+			for i in a:
+				if(i[3] == listaUid):
+					print(i)
+			for i in p:
+				if(i[3] == listaUid):
+					print(i)
+			print("Esta ação apagará os dados do banco de dados permanentemente. Aproxime a tag ADMIN para confirmar.\n")
 			confirma,uid = leitura(conSerial)
 			while(confirma[0] == ''):
 				confirma,uid = leitura(conSerial)
@@ -62,12 +69,14 @@ def confereop(op,conSerial,cnx):
 				print("Dados apagados.\n")
 			else:
 				print("Tag inválida. Por razões de segurança, será redirecionado ao menu.\n")
+		else:
+			print("Tag não cadastrada.")
 	menu(conSerial,cnx)
 
 def menu(conSerial,cnx):
 	while(conSerial.isOpen()):
 		print("=== CONFIGURAÇÃO DE TAG ===")
-		op = int(input("Informe a operação desejada!\n1 - Registrar professor no banco de dados\n2 - Registrar aluno no banco de dados\n3 - Formatar tag\n0 - Sair\n"))
+		op = int(input("Informe a operação desejada!\n1 - Registrar professor no banco de dados\n2 - Registrar aluno no banco de dados\n3 - Deletar tag\n0 - Voltar para o menu inicial\n"))
 		while not(op == 1 or op == 2 or op == 3 or op == 0):
 			op = int(input("Operação inválida! Informe uma operação indicada.\n"))
 		if(op != 0):
