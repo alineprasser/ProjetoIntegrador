@@ -43,7 +43,7 @@ def authProf(conSerial,cnx):
 	p = confereUid(l,uid)
 	
 	while not(p):
-		print("Acesso negado!")
+		print("Aguardando autenticação!")
 		uid = leitura(conSerial)
 		p = confereUid(l,uid)
 	
@@ -57,7 +57,11 @@ def authAluno(conSerial,cnx):
 	
 	return p,uid
 
-def main(args):
+def imprimeLista(lst):
+	for i in range(len(lst)):
+		print(lst[i])
+
+def main():
 	#==== banco ====
 	cnx = banco.con()
 	
@@ -65,7 +69,7 @@ def main(args):
 	conSerial = conSer()
 	
 	#==== inicializando ====
-	print("Leitor NFC!")
+	print("=== CHAMADA ===")
 	print("Aproxime a tag!")
 	conSerial.readline() #found pn532
 	conSerial.readline() #firmware version
@@ -76,20 +80,24 @@ def main(args):
 	time.sleep(1)
 	
 	m = banco.selectProf(cnx)
+	d = banco.selectDisc(cnx)
 	for i in range(len(m)):
 		if(prof == m[i][3]):
 			nomeprof = m[i][2]
+			if(m[i][0] == d[i][3]):
+				nomedisc = d[i][1]
 	
 	cls = lambda: os.system('cls')
 	cls()
 	print("Olá",nomeprof)
+	print(nomedisc)
 	print("Chamada iniciada no dia",datetime.datetime.now().strftime("%d/%m/%y às %H:%M:%S"))
 	
 	
 	#==== leitura dos alunos ====
 	l = banco.selectAluno(cnx)
 	n = []
-	
+	presenca = []
 	while(p):
 		f,aluno = authAluno(conSerial,cnx)
 		if(aluno[0] != ''):
@@ -98,7 +106,8 @@ def main(args):
 					if(aluno == l[i][3]):
 						if aluno not in n:
 							n.append(aluno)
-							print("Aluno presente: %s"%(l[i][1]),datetime.datetime.now().strftime("(%H:%M:%S)"))
+							presenca.append(l[i][1])
+							print(datetime.datetime.now().strftime("(%H:%M:%S)"),"Aluno presente: %s"%(l[i][1]))
 						else:
 							print("Aluno já registrado!")
 			else:
@@ -110,6 +119,10 @@ def main(args):
 			if(len(n) == 0):
 				print("Não houve presenças nesse dia.")
 			print("Chamada encerrada",datetime.datetime.now().strftime("às %H:%M:%S"),"por",nomeprof)
+			print()
+			print("Lista de alunos presentes: ")
+			imprimeLista(presenca)
+			time.sleep(5)
 	
 	conSerial.close()
 	cnx.close()
@@ -117,4 +130,4 @@ def main(args):
 
 if __name__ == '__main__':
 	import sys
-	sys.exit(main(sys.argv))
+	sys.exit(main())
