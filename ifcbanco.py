@@ -16,21 +16,21 @@ def leitura(conSerial):
 	x = uid.split(" ")
 	return x,uid
 
-def confereop(op):
-	conSerial = LeitorNfcPython.conSer()
-	conSerial.readline() #found pn532
-	conSerial.readline() #firmware version
-	conSerial.readline()
-	cnx = banco.con()
+def confereop(op,conSerial,cnx):
+	adm = ['04', 'B3', '61', '2A', 'E7', '4C', '80']
 	p = banco.selectUidProf(cnx)
 	d = banco.selectDisc(cnx)
-	a = banco.selectUidAluno(cnx)
-	x,uid = leitura(conSerial)
-	while(x[0] == ''):
-		x,uid = leitura(conSerial)
+	todas = banco.selectTodasUid(cnx)
+	
+	print("Aproxime a tag ao leitor.\n")
+	
+	listaUid,uid = leitura(conSerial)
+	while(listaUid[0] == ''):
+		listaUid,uid = leitura(conSerial)
+	
 	if(op == 1):
-		if x in p:
-			print("Tag já está cadastrada no banco de dados!")
+		if listaUid in todas:
+			print("Tag já está cadastrada no banco de dados!\n")
 		else:
 			nome = input("Informe o nome do professor: ")
 			cod = input("Informe o código do professor: ")
@@ -39,25 +39,53 @@ def confereop(op):
 			ch = input("Informe a carga horária da disciplina: ")
 			p = banco.selectProf(cnx)
 			for i in p:
-				if(i[3] == x):
+				if(i[3] == listaUid):
 					idp = i[0]
-			banco.insertDisc(cnx,nome,ch,idp)
-	else:
-		if x in a:
-			print("Tag já está cadastrada no banco de dados!")
+			banco.insertDisc(cnx,disc,ch,idp)
+			print("Professor cadastrado com sucesso!\n")
+	elif(op == 2):
+		if listaUid in todas:
+			print("Tag já está cadastrada no banco de dados!\n")
 		else:
 			nome = input("Informe o nome do aluno: ")
 			mat = input("Informe a matrícula: ")
 			banco.insertAluno(cnx,nome,mat,uid)
+			print("Aluno cadastrado com sucesso!\n")
+	else:
+		if listaUid in todas:
+			print("Esta ação não poderá ser recuperada posteriormente. Aproxime a tag ADMIN para confirmar.\n")
+			confirma,uid = leitura(conSerial)
+			while(confirma[0] == ''):
+				confirma,uid = leitura(conSerial)
+			if(confirma == adm):
+				banco.deleteTag(cnx,listaUid)
+				print("Dados apagados.\n")
+			else:
+				print("Tag inválida. Por razões de segurança, será redirecionado ao menu.\n")
+	menu(conSerial,cnx)
 
-def main(args):
-	print("Informe a operação desejada!\n1 - Registrar professor no banco de dados\n2 - Registrar aluno no banco de dados")
-	op = int(input())
-	while(op != 1 and op != 2):
-		op = int(input("Operação inválida. Informe 1 ou 2!\n"))
-	confereop(op)
+def menu(conSerial,cnx):
+	while(conSerial.isOpen()):
+		print("=== CONFIGURAÇÃO DE TAG ===")
+		op = int(input("Informe a operação desejada!\n1 - Registrar professor no banco de dados\n2 - Registrar aluno no banco de dados\n3 - Formatar tag\n0 - Sair\n"))
+		while not(op == 1 or op == 2 or op == 3 or op == 0):
+			op = int(input("Operação inválida! Informe uma operação indicada.\n"))
+		if(op != 0):
+			confereop(op,conSerial,cnx)
+		else:
+			conSerial.close()
+			cnx.close()
+
+def main():
+	conSerial = LeitorNfcPython.conSer()
+	conSerial.readline() #found pn532
+	conSerial.readline() #firmware version
+	conSerial.readline()
+	cnx = banco.con()
+	
+	menu(conSerial,cnx)
 	return 0
 
 if __name__ == '__main__':
     import sys
-    sys.exit(main(sys.argv))
+    sys.exit(main())
