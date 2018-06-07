@@ -11,6 +11,8 @@
  
  5 - Caso a opção de configuração seja selecionada, o arquivo "ifcbanco.py" é iniciado. Este arquivo abrirá um menu, onde o usuário poderá escolher dentre quatro opções: registrar um professor no banco de dados, registrar um aluno no banco de dados, deletar uma tag ou voltar ao menu inicial, do arquivo "main.py".
  
- 6 - Para registrar tanto aluno quanto professor no banco de dados é necessário que uma tag em branco (não cadastrada) seja aproximada ao leitor. Caso uma tag que já está cadastrada seja aproximada, o programa não efetuará atualização das informações, mas sim retornará ao menu anterior. Os dados que se deseja registrar no banco de dados serão feitos via input no Python, para que o próprio usuário os registre. Para deletar uma tag basta aproximá-la do leitor e uma confirmação será pedida. Esta opção só pode ser concluída com o uso de uma tag configurada como ADMINISTRADOR, para que não haja risco de uma ação não-intencional.
+ 5.1 - Para registrar tanto aluno quanto professor no banco de dados é necessário que uma tag em branco (não cadastrada) seja aproximada ao leitor. Caso uma tag que já está cadastrada seja aproximada, o programa não efetuará atualização das informações, mas sim retornará ao menu anterior. Os dados que se deseja registrar no banco de dados serão feitos via input no Python, para que o próprio usuário os registre. Para deletar uma tag basta aproximá-la do leitor e uma confirmação será pedida. Esta opção só pode ser concluída com o uso de uma tag configurada como ADMINISTRADOR, para que não haja risco de uma ação não-intencional.
  
  Ao fim dos casos, basta inserir o número 0 para sair e encerrar a operação.
+
+6 - O arquivo "banco.py" é o responsável por efetuar a conexão com o banco de dados MySQL, realizando todas as consultas necessárias para a autenticação das tags registradas no banco de dados utilizado nesse projeto.
