@@ -31,7 +31,7 @@ def confereUid(l,x):
 
 def leitura(conSerial):
 	ler = conSerial.readline() #tag
-	x = ler.decode('utf-8')
+	x = ler.decode('utf-8') 
 	uid = x[:20].split(" ") #lista com uid
 	
 	return uid
@@ -106,7 +106,8 @@ def main():
 					if(aluno == l[i][3]):
 						if aluno not in n:
 							n.append(aluno)
-							presenca.append(l[i][1])
+							x = '%s %s'%(l[i][1],l[i][2])
+							presenca.append(x)
 							print(datetime.datetime.now().strftime("(%H:%M:%S)"),"Aluno presente: %s"%(l[i][1]))
 						else:
 							print("Aluno já registrado!")
@@ -116,17 +117,11 @@ def main():
 		
 		if(aluno == prof):
 			p = False
-			if(len(n) == 0):
-				print("Não houve presenças nesse dia.")
 			print("Chamada encerrada",datetime.datetime.now().strftime("às %H:%M:%S"),"por",nomeprof)
-			print()
-			print("Lista de alunos presentes: ")
-			imprimeLista(presenca)
-			time.sleep(5)
-	
+		
 	conSerial.close()
 	cnx.close()
-	return 0
+	return presenca,nomeprof,nomedisc
 
 if __name__ == '__main__':
 	import sys
